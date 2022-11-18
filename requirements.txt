@@ -1,0 +1,4 @@
+azure-functions
+fastapi
+uvicorn[standard]
+nest_asyncio
