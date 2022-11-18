@@ -1,14 +1,17 @@
 import random
+import os
 from typing import Union
 
 import fastapi
 
-app = fastapi.FastAPI(
-    servers=[{"url": "/api", "description": "API"}],
-    root_path="/public",
-    root_path_in_servers=False,
-)
-
+if os.getenv('FUNCTIONS_WORKER_RUNTIME'):
+    app = fastapi.FastAPI(
+        servers=[{"url": "/api", "description": "API"}],
+        root_path="/public",
+        root_path_in_servers=False,
+    )
+else:
+    app = fastapi.FastAPI()
 
 @app.get("/generate_name")
 async def generate_name(
