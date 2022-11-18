@@ -72,7 +72,7 @@ resource apimAPI 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
     protocols: [
       'https'
     ]
-    path: '/api'
+    path: 'api'
   }
 }
 
@@ -97,15 +97,15 @@ resource apimAPIGetPolicy 'Microsoft.ApiManagement/service/apis/operations/polic
 
 resource apimAPIPublic 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
   parent: apimService
-  name: 'public'
+  name: 'public-docs'
   properties: {
-    displayName: 'Public (No key)'
+    displayName: 'Doc Paths (No Key)'
     apiRevision: '1'
     subscriptionRequired: false
     protocols: [
       'https'
     ]
-    path: '/public'
+    path: 'public'
   }
 }
 
@@ -113,19 +113,9 @@ resource apimAPIDocsSwagger 'Microsoft.ApiManagement/service/apis/operations@202
   parent: apimAPIPublic
   name: 'swagger-docs'
   properties: {
-    displayName: 'Swagger Docs'
+    displayName: 'Documentation'
     method: 'GET'
     urlTemplate: '/docs'
-  }
-}
-
-resource apimAPIDocsRedoc 'Microsoft.ApiManagement/service/apis/operations@2021-12-01-preview' = {
-  parent: apimAPIPublic
-  name: 'redoc-docs'
-  properties: {
-    displayName: 'Redoc Docs'
-    method: 'GET'
-    urlTemplate: '/redoc'
   }
 }
 
@@ -139,19 +129,10 @@ resource apimAPIDocsSchema 'Microsoft.ApiManagement/service/apis/operations@2021
   }
 }
 
-var docsPolicy = '<policies>\r\n<inbound>\r\n<base />\r\n\r\n<set-backend-service id="apim-generated-policy" backend-id="${functionAppName}" />\r\n<cache-lookup vary-by-developer="false" vary-by-developer-groups="false" allow-private-response-caching="false" must-revalidate="false" downstream-caching-type="none" />\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n<cache-store duration="3600" />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
+var docsPolicy = '<policies>\r\n<inbound>\r\n<base />\r\n<set-backend-service id="apim-generated-policy" backend-id="${functionAppName}" />\r\n<cache-lookup vary-by-developer="false" vary-by-developer-groups="false" allow-private-response-caching="false" must-revalidate="false" downstream-caching-type="none" />\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n<cache-store duration="3600" />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
 
 resource apimAPIDocsSwaggerPolicy 'Microsoft.ApiManagement/service/apis/operations/policies@2021-12-01-preview' = {
   parent: apimAPIDocsSwagger
-  name: 'policy'
-  properties: {
-    format: 'xml'
-    value: docsPolicy
-  }
-}
-
-resource apimAPIDocsRedocPolicy 'Microsoft.ApiManagement/service/apis/operations/policies@2021-12-01-preview' = {
-  parent: apimAPIDocsRedoc
   name: 'policy'
   properties: {
     format: 'xml'
