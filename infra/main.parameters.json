@@ -7,6 +7,12 @@
       },
       "location": {
         "value": "${AZURE_LOCATION}"
+      },
+      "publisherEmail": {
+        "value": "your-email@your-domain.com"
+      },
+      "publisherName": {
+        "value": "Your API Provider Organization Name"
       }
     }
   }

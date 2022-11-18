@@ -2,6 +2,8 @@ param name string
 param location string = resourceGroup().location
 param resourceToken string
 param tags object
+param publisherEmail string
+param publisherName string
 
 var prefix = '${name}-${resourceToken}'
 
@@ -34,7 +36,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   }
 }
 
-var validStoragePrefix = take(replace(prefix, '-', ''), 17)
+var validStoragePrefix = toLower(take(replace(prefix, '-', ''), 17))
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   name: '${validStoragePrefix}storage'
@@ -120,6 +122,8 @@ module apiManagementResources 'apimanagement.bicep' = {
     appInsightsName: appInsights.name
     appInsightsId: appInsights.id
     appInsightsKey: appInsights.properties.InstrumentationKey
+    publisherEmail: publisherEmail
+    publisherName: publisherName
   }
 }
 
