@@ -38,3 +38,5 @@ module resources 'resources.bicep' = {
     publisherName: publisherName
   }
 }
+
+output APPLICATIONINSIGHTS_CONNECTION_STRING string = resources.outputs.APPLICATIONINSIGHTS_CONNECTION_STRING

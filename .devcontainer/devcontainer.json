@@ -36,7 +36,7 @@
         8000,
         7071
     ],
-    "postCreateCommand": "pip3 install --user -r requirements.txt",
+    "postCreateCommand": "pip3 install --user -r requirements-dev.txt",
 
     "remoteUser": "vscode",
     "hostRequirements": {
