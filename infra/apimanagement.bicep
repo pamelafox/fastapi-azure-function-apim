@@ -64,9 +64,9 @@ resource apimNamedValuesKey 'Microsoft.ApiManagement/service/namedValues@2021-12
 
 resource apimAPI 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
   parent: apimService
-  name: 'simple-flask-api'
+  name: 'simple-fastapi-api'
   properties: {
-    displayName: 'Simple Flask API'
+    displayName: 'Protected API Calls'
     apiRevision: '1'
     subscriptionRequired: true
     protocols: [
@@ -99,7 +99,7 @@ resource apimAPIPublic 'Microsoft.ApiManagement/service/apis@2021-12-01-preview'
   parent: apimService
   name: 'public-docs'
   properties: {
-    displayName: 'Doc Paths (No Key)'
+    displayName: 'Public Doc Paths'
     apiRevision: '1'
     subscriptionRequired: false
     protocols: [
