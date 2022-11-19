@@ -142,4 +142,13 @@ resource functionAppProperties 'Microsoft.Web/sites/config@2022-03-01' = {
   ]
 }
 
-output APPLICATIONINSIGHTS_CONNECTION_STRING string = appInsights.properties.ConnectionString
+module appInsightsDashboard 'appinsightsdashboard.bicep' = {
+  name: 'appinsights-dashboard'
+  params: {
+    prefix: prefix
+    location: location
+    tags: tags
+    appInsightsName: appInsights.name
+  }
+}
+
