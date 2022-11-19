@@ -3,23 +3,23 @@
 This repository includes a simple HTTP API powered by FastAPI, made for demonstration purposes only.
 This API is designed to be deployed as a secured Azure Function with an API Management service in front.
 
-![Architecture diagram for API Management Service to Function App to FastAPI](screenshot_website.png)
+![Architecture diagram for API Management Service to Function App to FastAPI](readme_diagram_apim.png)
 
-Thanks to the API Management policies (declared in `apimanagement.bicep`), 
+Thanks to the API Management policies (declared in `apimanagement.bicep`),
 making calls to the actual API requires a subscription key, but viewing the auto-generated documentation
-or OpenAPI schema does not. The Azure Function has an authentication level of "function", 
+or OpenAPI schema does not. The Azure Function has an authentication level of "function",
 so even if someone knows its endpoint, they can't make calls to it without a function key.
 The API Management service does know the function key, and passes it on.
 
 ## Opening the project
 
-This project has devcontainer support, so it will be automatically setup if you open it in Github Codespaces or in local VS Code with the Dev Containers extension. 
+This project has devcontainer support, so it will be automatically setup if you open it in Github Codespaces or in local VS Code with the Dev Containers extension.
 
 If you're unable to open the devcontainer, then you'll need to:
 
 1. Create a [Python virtual environment](https://docs.python.org/3/tutorial/venv.html#creating-virtual-environments) and activate it.
 
-2. Install requirements: 
+2. Install requirements:
 
 ```shell
 pip3 install --user -r requirements-dev.txt
@@ -29,7 +29,7 @@ pip3 install --user -r requirements-dev.txt
 
 ## Local development
 
-Use the local emulator from Azure Functions Core Tools to test the function locally. 
+Use the local emulator from Azure Functions Core Tools to test the function locally.
 (There is no local emulator for the API Management service).
 
 1. Open this repository in Github Codespaces or VS Code with Remote Devcontainers extension.
@@ -42,12 +42,12 @@ Use the local emulator from Azure Functions Core Tools to test the function loca
 
 ## Deployment
 
-This repo is set up for deployment using the 
+This repo is set up for deployment using the
 [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview),
 which relies on the `azure.yaml` file and the configuration files in the `infra` folder.
 
 1. Sign up for a [free Azure account](https://azure.microsoft.com/free/)
-2. Run `azd up`. It will prompt you to login and to provide a name (like "fastfunc") and location (like "eastus"). Then it will provision the resources in your account and deploy the latest code. 
+2. Run `azd up`. It will prompt you to login and to provide a name (like "fastfunc") and location (like "eastus"). Then it will provision the resources in your account and deploy the latest code.
 3. Once it finishes deploying, navigate to the Azure Portal URL in the output.
 4. Under the _Resources_ tab, select the one labeled _API Management Service_.
 5. From the _Overview_ page, copy the _Gateway URL_.
