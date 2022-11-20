@@ -3,5 +3,6 @@ fastapi[all]
 black
 isort
 ruff
+pyupgrade
 pytest
 pre-commit

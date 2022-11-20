@@ -28,6 +28,8 @@ jobs:
             pip install -r requirements-dev.txt
         - name: Lint with ruff
           run: ruff api/
+        - name: Check pyupgrade
+          run: pyupgrade --py39-plus api/*.py
         - name: Check formatting with black
           run: black api/ --check --verbose
         - name: Check Python import sorting
