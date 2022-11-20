@@ -27,8 +27,10 @@ jobs:
             python -m pip install --upgrade pip
             pip install -r requirements-dev.txt
         - name: Lint with ruff
-          run: |
-            ruff api/
+          run: ruff api/
+        - name: Check formatting with black
+          run: black api/ --check --verbose
+        - name: Check Python import sorting
+          run: isort api/ --check
         - name: Run Pytest tests
-          run: |
-            pytest
+          run: pytest

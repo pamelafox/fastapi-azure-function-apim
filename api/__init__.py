@@ -1,5 +1,5 @@
-import nest_asyncio
 import azure.functions as func
+import nest_asyncio
 
 from .main import app
 

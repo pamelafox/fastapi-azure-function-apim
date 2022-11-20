@@ -5,11 +5,11 @@ This API is designed to be deployed as a secured Azure Function with an API Mana
 
 ![Architecture diagram for API Management Service to Function App to FastAPI](readme_diagram_apim.png)
 
-Thanks to the API Management policies (declared in `apimanagement.bicep`),
-making calls to the actual API requires a subscription key, but viewing the auto-generated documentation
-or OpenAPI schema does not. The Azure Function has an authentication level of "function",
+Thanks to the API Management policies, making calls to the actual API requires a subscription key,
+but viewing the auto-generated documentation or OpenAPI schema does not.
+The Azure Function has an authentication level of "function",
 so even if someone knows its endpoint, they can't make calls to it without a function key.
-The API Management service does know the function key, and passes it on.
+The API Management service _does_ know the function key, and passes it on.
 
 ## Opening the project
 

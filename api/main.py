@@ -1,10 +1,10 @@
-import random
 import os
+import random
 from typing import Union
 
 import fastapi
 
-if os.getenv('FUNCTIONS_WORKER_RUNTIME'):
+if os.getenv("FUNCTIONS_WORKER_RUNTIME"):
     app = fastapi.FastAPI(
         servers=[{"url": "/api", "description": "API"}],
         root_path="/public",
@@ -13,12 +13,11 @@ if os.getenv('FUNCTIONS_WORKER_RUNTIME'):
 else:
     app = fastapi.FastAPI()
 
+
 @app.get("/generate_name")
 async def generate_name(
     starts_with: str = None,
-    subscription_key: Union[str, None] = fastapi.Query(
-        default=None, alias="subscription-key"
-    ),
+    subscription_key: Union[str, None] = fastapi.Query(default=None, alias="subscription-key"),
 ):
     names = ["Minnie", "Margaret", "Myrtle", "Noa", "Nadia"]
     if starts_with:
