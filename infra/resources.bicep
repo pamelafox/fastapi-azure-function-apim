@@ -151,4 +151,3 @@ module appInsightsDashboard 'appinsightsdashboard.bicep' = {
     appInsightsName: appInsights.name
   }
 }
-
