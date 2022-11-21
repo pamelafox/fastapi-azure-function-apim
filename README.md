@@ -73,6 +73,17 @@ To open that dashboard, run this command once you've deployed:
 azd monitor --overview
 ```
 
+## Costs
+(only provided as an example, as of Nov-2022)
+
+Costs for this architecture are based on incoming traffic / usage, so cost should be near $0 if you're only testing it out, and otherwise increase based on your API usage.
+
+- API Management - Consumption tier: $3.50 per 1 million calls. The first 1 million calls per Azure subscription are free. [Pricing](https://azure.microsoft.com/pricing/details/api-management/)
+- Azure Functions - Consumption tier: $0.20 per 1 million calls. The first 1 million calls per Azure subscription are free. [Pricing](https://azure.microsoft.com/pricing/details/functions/)
+- Storage account - Standard tier (Hot): $0.0255 per used GiB, 	$0.065 per 10,000 write transactions. The account is only used to store the function code, so cost depends on size of function code and number of deploys (but should be quite low). [Pricing](https://azure.microsoft.com/pricing/details/storage/files/)
+- Application Insights: $2.88 per GB ingested data. The first 5 GB per billing account are included per month. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
+
+
 ## Getting help
 
 If you're working with this project and running into issues, please post in [Discussions](/discussions).
