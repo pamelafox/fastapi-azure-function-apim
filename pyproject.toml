@@ -8,3 +8,6 @@ ignore = ['D203']
 
 [tool.isort]
 profile = "black"
+
+[tool.pytest.ini_options]
+addopts = "-ra --cov --cov-fail-under=100"
