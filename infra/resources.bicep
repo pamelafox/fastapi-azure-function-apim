@@ -103,6 +103,10 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
           name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
           value: 'true'
         }
+        {
+          name: 'PYTHON_ISOLATE_WORKER_DEPENDENCIES'
+          value: '1'
+        }
       ]
     }
   }
@@ -134,7 +138,7 @@ resource functionAppProperties 'Microsoft.Web/sites/config@2022-03-01' = {
   parent: functionApp
   properties: {
       apiManagementConfig: {
-        id: '${apiManagementResources.outputs.apimServiceID}/apis/model-prediction-api'
+        id: '${apiManagementResources.outputs.apimServiceID}/apis/simple-fastapi-api'
       }
   }
   dependsOn: [

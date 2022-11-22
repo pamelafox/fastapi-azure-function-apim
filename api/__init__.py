@@ -9,4 +9,4 @@ fastapi_app = create_app()
 
 
 async def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
-    return func.AsgiMiddleware(fastapi_app).handle(req, context)
+    return await func.AsgiMiddleware(fastapi_app).handle_async(req, context)
