@@ -46,6 +46,10 @@ This repo is set up for deployment using the
 [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview),
 which relies on the `azure.yaml` file and the configuration files in the `infra` folder.
 
+[🎥 Watch a screencast of deploying and testing the app.](https://youtu.be/FPyq_aLzmIY)
+
+Steps for deployment:
+
 1. Sign up for a [free Azure account](https://azure.microsoft.com/free/)
 2. Run `azd up`. It will prompt you to login and to provide a name (like "fastfunc") and location (like "eastus"). Then it will provision the resources in your account and deploy the latest code.
 3. Once it finishes deploying, navigate to the Azure Portal URL in the output.
