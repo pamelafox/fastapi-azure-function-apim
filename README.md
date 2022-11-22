@@ -10,6 +10,7 @@ but viewing the auto-generated documentation or OpenAPI schema does not.
 The Azure Function has an authentication level of "function",
 so even if someone knows its endpoint, they can't make calls to it without a function key.
 The API Management service _does_ know the function key, and passes it on.
+[Learn more about the approach in this blog post.](http://blog.pamelafox.org/2022/11/fastapi-on-azure-functions-with-azure.html)
 
 ## Opening the project
 
