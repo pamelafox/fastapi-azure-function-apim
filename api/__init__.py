@@ -1,9 +1,6 @@
 import azure.functions as func
-import nest_asyncio
 
 from .fastapi_app import create_app
-
-nest_asyncio.apply()
 
 fastapi_app = create_app()
 
