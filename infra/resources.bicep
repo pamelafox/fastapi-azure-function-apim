@@ -155,3 +155,6 @@ module appInsightsDashboard 'appinsightsdashboard.bicep' = {
     appInsightsName: appInsights.name
   }
 }
+
+
+output SERVICE_API_ENDPOINTS array = ['${apiManagementResources.outputs.apimServiceUrl}/public/docs']

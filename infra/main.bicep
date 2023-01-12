@@ -38,3 +38,5 @@ module resources 'resources.bicep' = {
     publisherName: publisherName
   }
 }
+
+output SERVICE_API_ENDPOINTS array = resources.outputs.SERVICE_API_ENDPOINTS

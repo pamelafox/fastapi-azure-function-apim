@@ -187,3 +187,4 @@ resource apimAPIDiagnostics 'Microsoft.ApiManagement/service/apis/diagnostics@20
 }
 
 output apimServiceID string = apimService.id
+output apimServiceUrl string = apimService.properties.gatewayUrl

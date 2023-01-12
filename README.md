@@ -53,11 +53,8 @@ Steps for deployment:
 
 1. Sign up for a [free Azure account](https://azure.microsoft.com/free/)
 2. Run `azd up`. It will prompt you to login and to provide a name (like "fastfunc") and location (like "eastus"). Then it will provision the resources in your account and deploy the latest code.
-3. Once it finishes deploying, navigate to the Azure Portal URL in the output.
-4. Under the _Resources_ tab, select the one labeled _API Management Service_.
-5. From the _Overview_ page, copy the _Gateway URL_.
-6. Append '/public/docs' to the URL and open the page in a new window.
-7. To get a subscription key for API calls, open the _Subscriptions_ page in the portal and copy one of the built-in keys.
+3. Once it finishes deploying, navigate to the API endpoint URL from the output.
+7. To get a subscription key for API calls, navigate to the portal URL from the output, open the _Subscriptions_ page from the side nav, and copy one of the built-in keys.
 
 ### CI/CD pipeline
 
