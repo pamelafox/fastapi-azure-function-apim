@@ -81,7 +81,6 @@ module functionApp 'core/host/functions.bicep' = {
     tags: union(tags, { 'azd-service-name': 'api' })
     alwaysOn: false
     appSettings: {
-      //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
       PYTHON_ISOLATE_WORKER_DEPENDENCIES: 1
     }
     applicationInsightsName: appInsightsName
