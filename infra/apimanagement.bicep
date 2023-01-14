@@ -1,32 +1,12 @@
-param location string
-param tags object
-param prefix string
+param apimServiceName string
 param functionAppName string
-param functionAppUrl string
-param functionAppId string
-@secure()
-param functionAppKey string
-param appInsightsName string
-param appInsightsId string
-param appInsightsKey string
-param publisherEmail string
-param publisherName string
 
-resource apimService 'Microsoft.ApiManagement/service@2021-12-01-preview' = {
-  name: '${prefix}-function-app-apim'
-  location: location
-  tags: tags
-  sku: {
-    name: 'Consumption'
-    capacity: 0
-  }
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    publisherEmail: publisherEmail
-    publisherName: publisherName
-  }
+resource apimService 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+  name: apimServiceName
+}
+
+resource functionApp 'Microsoft.Web/sites@2022-03-01' existing = {
+  name: functionAppName
 }
 
 resource apimBackend 'Microsoft.ApiManagement/service/backends@2021-12-01-preview' = {
@@ -34,9 +14,9 @@ resource apimBackend 'Microsoft.ApiManagement/service/backends@2021-12-01-previe
   name: functionAppName
   properties: {
     description: functionAppName
-    url: 'https://${functionAppUrl}'
+    url: 'https://${functionApp.properties.hostNames[0]}'
     protocol: 'http'
-    resourceId: '${environment().resourceManager}${functionAppId}'
+    resourceId: '${environment().resourceManager}${functionApp.id}'
     credentials: {
       header: {
         'x-functions-key': [
@@ -45,6 +25,7 @@ resource apimBackend 'Microsoft.ApiManagement/service/backends@2021-12-01-previe
       }
     }
   }
+  dependsOn: [apimNamedValuesKey]
 }
 
 resource apimNamedValuesKey 'Microsoft.ApiManagement/service/namedValues@2021-12-01-preview' = {
@@ -52,7 +33,7 @@ resource apimNamedValuesKey 'Microsoft.ApiManagement/service/namedValues@2021-12
   name: 'function-app-key'
   properties: {
     displayName: 'function-app-key'
-    value: functionAppKey
+    value: listKeys('${functionApp.id}/host/default', '2019-08-01').functionKeys.default
     tags: [
       'key'
       'function'
@@ -93,6 +74,7 @@ resource apimAPIGetPolicy 'Microsoft.ApiManagement/service/apis/operations/polic
     format: 'xml'
     value: '<policies>\r\n<inbound>\r\n<base />\r\n\r\n<set-backend-service id="apim-generated-policy" backend-id="${functionAppName}" />\r\n<rate-limit calls="20" renewal-period="90" remaining-calls-variable-name="remainingCallsPerSubscription" />\r\n<cors allow-credentials="false">\r\n<allowed-origins>\r\n<origin>*</origin>\r\n</allowed-origins>\r\n<allowed-methods>\r\n<method>GET</method>\r\n<method>POST</method>\r\n</allowed-methods>\r\n</cors>\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
   }
+  dependsOn: [functionApp]
 }
 
 resource apimAPIPublic 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
@@ -138,6 +120,7 @@ resource apimAPIDocsSwaggerPolicy 'Microsoft.ApiManagement/service/apis/operatio
     format: 'xml'
     value: docsPolicy
   }
+  dependsOn: [functionApp]
 }
 
 resource apimAPIDocsSchemaPolicy 'Microsoft.ApiManagement/service/apis/operations/policies@2021-12-01-preview' = {
@@ -147,44 +130,21 @@ resource apimAPIDocsSchemaPolicy 'Microsoft.ApiManagement/service/apis/operation
     format: 'xml'
     value: docsPolicy
   }
+  dependsOn: [functionApp]
 }
 
-/* Logging*/
-
-resource namedValueAppInsightsKey 'Microsoft.ApiManagement/service/namedValues@2021-01-01-preview' = {
-  parent: apimService
-  name: 'logger-credentials'
+resource functionAppProperties 'Microsoft.Web/sites/config@2022-03-01' = {
+  name: 'web'
+  kind: 'string'
+  parent: functionApp
   properties: {
-    displayName: 'logger-credentials'
-    value: appInsightsKey
-    secret: true
-  }
-}
-
-resource apimLogger 'Microsoft.ApiManagement/service/loggers@2021-12-01-preview' = {
-  parent: apimService
-  name: appInsightsName
-  properties: {
-    loggerType: 'applicationInsights'
-    credentials: {
-      instrumentationKey: '{{logger-credentials}}'
-    }
-    isBuffered: true
-    resourceId: appInsightsId
+      apiManagementConfig: {
+        id: '${apimService.id}/apis/simple-fastapi-api'
+      }
   }
   dependsOn: [
-    namedValueAppInsightsKey
+    apimService
   ]
 }
 
-resource apimAPIDiagnostics 'Microsoft.ApiManagement/service/apis/diagnostics@2021-12-01-preview' = {
-  parent: apimAPI
-  name: 'applicationinsights'
-  properties: {
-    alwaysLog: 'allErrors'
-    loggerId: apimLogger.id
-  }
-}
-
-output apimServiceID string = apimService.id
 output apimServiceUrl string = apimService.properties.gatewayUrl

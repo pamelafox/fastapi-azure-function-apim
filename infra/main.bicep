@@ -26,17 +26,100 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-module resources 'resources.bicep' = {
-  name: 'resources'
+var prefix = '${name}-${resourceToken}'
+
+var appServicePlanName = '${prefix}-plan'
+var appInsightsName = '${prefix}-appinsights'
+
+// Monitor application with Azure Monitor
+module monitoring './core/monitor/monitoring.bicep' = {
+  name: 'monitoring'
   scope: resourceGroup
   params: {
-    name: name
     location: location
-    resourceToken: resourceToken
     tags: tags
+    logAnalyticsName: '${prefix}-logworkspace'
+    applicationInsightsName: appInsightsName
+    applicationInsightsDashboardName: 'appinsights-dashboard'
+  }
+}
+
+// Backing storage for Azure functions backend API
+var validStoragePrefix = toLower(take(replace(prefix, '-', ''), 17))
+module storageAccount 'core/storage/storage-account.bicep' = {
+  name: 'storage'
+  scope: resourceGroup
+  params: {
+    name: '${validStoragePrefix}storage'
+    location: location
+    tags: tags
+  }
+}
+
+
+// Create an App Service Plan to group applications under the same payment plan and SKU
+module appServicePlan './core/host/appserviceplan.bicep' = {
+  name: 'appserviceplan'
+  scope: resourceGroup
+  params: {
+    name: appServicePlanName
+    location: location
+    tags: tags
+    sku: {
+      name: 'Y1'
+      tier: 'Dynamic'
+    }
+  }
+}
+
+module functionApp 'core/host/functions.bicep' = {
+  name: 'function'
+  scope: resourceGroup
+  params: {
+    name: '${prefix}-function-app'
+    location: location
+    tags: union(tags, { 'azd-service-name': 'api' })
+    alwaysOn: false
+    appSettings: {
+      //WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
+      PYTHON_ISOLATE_WORKER_DEPENDENCIES: 1
+    }
+    applicationInsightsName: appInsightsName
+    appServicePlanId: appServicePlan.outputs.id
+    runtimeName: 'python'
+    runtimeVersion: '3.9'
+    storageAccountName: storageAccount.outputs.name
+  }
+}
+
+
+// Creates Azure API Management (APIM) service to mediate the requests between the frontend and the backend API
+module apim './core/gateway/apim.bicep' = {
+  name: 'apim-deployment'
+  scope: resourceGroup
+  params: {
+    name: '${prefix}-function-app-apim'
+    location: location
+    tags: tags
+    applicationInsightsName: monitoring.outputs.applicationInsightsName
     publisherEmail: publisherEmail
     publisherName: publisherName
   }
 }
 
-output SERVICE_API_ENDPOINTS array = resources.outputs.SERVICE_API_ENDPOINTS
+// Configures the API in the Azure API Management (APIM) service
+module apimAPI 'apimanagement.bicep' = {
+  name: 'apimanagement-resources'
+  scope: resourceGroup
+  params: {
+    apimServiceName: apim.outputs.apimServiceName
+    functionAppName: functionApp.outputs.name
+  }
+  dependsOn: [
+    functionApp
+  ]
+}
+
+
+
+output SERVICE_API_ENDPOINTS array = ['${apimAPI.outputs.apimServiceUrl}/public/docs']
