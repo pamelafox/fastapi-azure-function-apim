@@ -1,9 +1,7 @@
 -r requirements.txt
 fastapi[all]
 black
-isort
 ruff
-pyupgrade
 pytest
 coverage
 pytest-cov
