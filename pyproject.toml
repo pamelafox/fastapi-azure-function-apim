@@ -3,11 +3,9 @@ line-length = 120
 target-version = ['py39']
 
 [tool.ruff]
+select = ["E", "F", "I", "UP"]
+target-version = "py39"
 line-length = 120
-ignore = ['D203']
-
-[tool.isort]
-profile = "black"
 
 [tool.pytest.ini_options]
 addopts = "-ra --cov --cov-fail-under=100"

@@ -1,2 +1,2 @@
 azure-functions>=1.12.0
-fastapi
+fastapi==0.92.0
