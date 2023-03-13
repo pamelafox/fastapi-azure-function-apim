@@ -10,10 +10,15 @@ import pytest
 from . import main
 
 
+# Based on https://github.com/Azure/azure-functions-python-library/blob/deafb7972f6562b0c1b700a04b7476df246e53f8/tests/test_http_asgi.py#L121
 class MockContext(func.Context):
     @property
     def invocation_id(self):
         return ""
+
+    @property
+    def thread_local_storage(self):
+        return None
 
     @property
     def function_name(self):
