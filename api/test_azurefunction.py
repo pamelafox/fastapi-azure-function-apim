@@ -39,7 +39,7 @@ class MockContext(func.Context):
 
 @pytest.fixture
 def mock_functions_env(monkeypatch):
-    monkeypatch.setenv("FUNCTIONS_WORKER_RUNTIME", "python")
+    monkeypatch.setenv("SCM_DO_BUILD_DURING_DEPLOYMENT", "true")
     app_module = sys.modules["api"]
     importlib.reload(app_module)
     from . import main  # noqa
