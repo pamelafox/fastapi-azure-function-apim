@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-20.04"]
-        python_version: ["3.9"]
+        python_version: ["3.9", "3.10"]
     steps:
         - uses: actions/checkout@v3
         - name: Setup python
@@ -29,7 +29,7 @@ jobs:
         - name: Lint with ruff
           run: ruff api/
         - name: Check pyupgrade
-          run: pyupgrade --py39-plus api/*.py
+          run: pyupgrade --py310-plus api/*.py
         - name: Check formatting with black
           run: black api/ --check --verbose
         - name: Check Python import sorting

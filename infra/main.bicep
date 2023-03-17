@@ -86,7 +86,7 @@ module functionApp 'core/host/functions.bicep' = {
     applicationInsightsName: appInsightsName
     appServicePlanId: appServicePlan.outputs.id
     runtimeName: 'python'
-    runtimeVersion: '3.9'
+    runtimeVersion: '3.10'
     storageAccountName: storageAccount.outputs.name
   }
 }
