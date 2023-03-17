@@ -1,10 +1,10 @@
 [tool.black]
 line-length = 120
-target-version = ['py39']
+target-version = ['py310']
 
 [tool.ruff]
 select = ["E", "F", "I", "UP"]
-target-version = "py39"
+target-version = "py310"
 line-length = 120
 
 [tool.pytest.ini_options]

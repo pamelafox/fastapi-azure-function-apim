@@ -1,5 +1,4 @@
 import random
-import typing
 
 import fastapi
 
@@ -9,7 +8,7 @@ router = fastapi.APIRouter()
 @router.get("/generate_name")
 async def generate_name(
     starts_with: str = None,
-    subscription_key: typing.Union[str, None] = fastapi.Query(default=None, alias="subscription-key"),
+    subscription_key: str | None = fastapi.Query(default=None, alias="subscription-key"),
 ):
     names = ["Minnie", "Margaret", "Myrtle", "Noa", "Nadia"]
     if starts_with:
