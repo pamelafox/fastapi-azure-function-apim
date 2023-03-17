@@ -6,7 +6,8 @@ from . import fastapi_routes
 
 
 def create_app():
-    if os.getenv("FUNCTIONS_WORKER_RUNTIME"):
+    # Check for an environment variable that's only set in production
+    if os.getenv("SCM_DO_BUILD_DURING_DEPLOYMENT"):
         app = fastapi.FastAPI(
             servers=[{"url": "/api", "description": "API"}],
             root_path="/public",

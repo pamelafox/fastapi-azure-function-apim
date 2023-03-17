@@ -1,12 +1,16 @@
 {
-    "name": "Azure Developer CLI",
+    "name": "fastapi-azure-function-apim",
     "build": {
         "dockerfile": "Dockerfile",
         "args": {
-            "VARIANT": "3.10-bullseye"
-        }
+            "IMAGE": "python:3.10"
+        },
+        "context": ".."
     },
     "features": {
+        "ghcr.io/devcontainers/features/azure-cli:1": {
+            "version": "2.38"
+        },
         "ghcr.io/devcontainers/features/node:1": {
             "version": "16",
             "nodeGypDependencies": false
@@ -27,8 +31,7 @@
         8000,
         7071
     ],
-    "postCreateCommand": "pip3 install --user -r requirements-dev.txt && pre-commit install",
-
+    "postCreateCommand": "python3 -m pip install --user -r requirements-dev.txt && pre-commit install",
     "remoteUser": "vscode",
     "hostRequirements": {
         "memory": "8gb"

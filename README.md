@@ -23,7 +23,7 @@ If you're unable to open the devcontainer, then you'll need to:
 2. Install requirements:
 
 ```shell
-pip3 install --user -r requirements-dev.txt
+python3 -m pip install --user -r requirements-dev.txt
 ```
 
 3. Install the [Azure Dev CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
@@ -37,7 +37,7 @@ Use the local emulator from Azure Functions Core Tools to test the function loca
 
 
 2. Open the Terminal and make sure you're in the root folder.
-2. Run `func host start`
+2. Run `PYTHON_ISOLATE_WORKER_DEPENDENCIES=1 func host start`
 3. Click 'http://localhost:7071/{*route}' in the terminal, which should open the website in a new tab.
 4. Change the URL to navigate to either the API at `/generate_name` or the docs at `/docs`.
 

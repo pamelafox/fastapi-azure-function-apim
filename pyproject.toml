@@ -1,11 +1,11 @@
 [tool.black]
 line-length = 120
-target-version = ['py30']
+target-version = ['py310']
 
 [tool.ruff]
-line-length = 120
-target-version = "py310"
 select = ["E", "F", "I", "UP"]
+target-version = "py310"
+line-length = 120
 
 [tool.pytest.ini_options]
 addopts = "-ra --cov --cov-fail-under=100"
