@@ -72,9 +72,9 @@ resource apimAPIGetPolicy 'Microsoft.ApiManagement/service/apis/operations/polic
   name: 'policy'
   properties: {
     format: 'xml'
-    value: '<policies>\r\n<inbound>\r\n<base />\r\n\r\n<set-backend-service id="apim-generated-policy" backend-id="${functionAppName}" />\r\n<rate-limit calls="20" renewal-period="90" remaining-calls-variable-name="remainingCallsPerSubscription" />\r\n<cors allow-credentials="false">\r\n<allowed-origins>\r\n<origin>*</origin>\r\n</allowed-origins>\r\n<allowed-methods>\r\n<method>GET</method>\r\n<method>POST</method>\r\n</allowed-methods>\r\n</cors>\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
+    value: '<policies>\r\n<inbound>\r\n<base />\r\n\r\n<set-backend-service id="apim-generated-policy" backend-id="${functionApp.properties.name}" />\r\n<rate-limit calls="20" renewal-period="90" remaining-calls-variable-name="remainingCallsPerSubscription" />\r\n<cors allow-credentials="false">\r\n<allowed-origins>\r\n<origin>*</origin>\r\n</allowed-origins>\r\n<allowed-methods>\r\n<method>GET</method>\r\n<method>POST</method>\r\n</allowed-methods>\r\n</cors>\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
   }
-  dependsOn: [functionApp]
+  dependsOn: [apimBackend]
 }
 
 resource apimAPIPublic 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
@@ -111,7 +111,7 @@ resource apimAPIDocsSchema 'Microsoft.ApiManagement/service/apis/operations@2021
   }
 }
 
-var docsPolicy = '<policies>\r\n<inbound>\r\n<base />\r\n<set-backend-service id="apim-generated-policy" backend-id="${functionAppName}" />\r\n<cache-lookup vary-by-developer="false" vary-by-developer-groups="false" allow-private-response-caching="false" must-revalidate="false" downstream-caching-type="none" />\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n<cache-store duration="3600" />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
+var docsPolicy = '<policies>\r\n<inbound>\r\n<base />\r\n<set-backend-service id="apim-generated-policy" backend-id="${functionApp.properties.name}" />\r\n<cache-lookup vary-by-developer="false" vary-by-developer-groups="false" allow-private-response-caching="false" must-revalidate="false" downstream-caching-type="none" />\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n<cache-store duration="3600" />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
 
 resource apimAPIDocsSwaggerPolicy 'Microsoft.ApiManagement/service/apis/operations/policies@2021-12-01-preview' = {
   parent: apimAPIDocsSwagger
@@ -120,7 +120,7 @@ resource apimAPIDocsSwaggerPolicy 'Microsoft.ApiManagement/service/apis/operatio
     format: 'xml'
     value: docsPolicy
   }
-  dependsOn: [functionApp]
+  dependsOn: [apimBackend]
 }
 
 resource apimAPIDocsSchemaPolicy 'Microsoft.ApiManagement/service/apis/operations/policies@2021-12-01-preview' = {
@@ -130,7 +130,7 @@ resource apimAPIDocsSchemaPolicy 'Microsoft.ApiManagement/service/apis/operation
     format: 'xml'
     value: docsPolicy
   }
-  dependsOn: [functionApp]
+  dependsOn: [apimBackend]
 }
 
 resource functionAppProperties 'Microsoft.Web/sites/config@2022-03-01' = {
