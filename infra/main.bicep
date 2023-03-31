@@ -28,9 +28,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 var prefix = '${name}-${resourceToken}'
 
-var appServicePlanName = '${prefix}-plan'
-var appInsightsName = '${prefix}-appinsights'
-
 // Monitor application with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = {
   name: 'monitoring'
@@ -39,7 +36,7 @@ module monitoring './core/monitor/monitoring.bicep' = {
     location: location
     tags: tags
     logAnalyticsName: '${prefix}-logworkspace'
-    applicationInsightsName: appInsightsName
+    applicationInsightsName: '${prefix}-appinsights'
     applicationInsightsDashboardName: 'appinsights-dashboard'
   }
 }
@@ -62,7 +59,7 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
   scope: resourceGroup
   params: {
-    name: appServicePlanName
+    name: '${prefix}-plan'
     location: location
     tags: tags
     sku: {
@@ -76,14 +73,15 @@ module functionApp 'core/host/functions.bicep' = {
   name: 'function'
   scope: resourceGroup
   params: {
-    name: '${prefix}-function-app'
+    // Truncating to 32 due to https://github.com/Azure/azure-functions-host/issues/2015
+    name: '${take(prefix, 19)}-function-app'
     location: location
     tags: union(tags, { 'azd-service-name': 'api' })
     alwaysOn: false
     appSettings: {
       PYTHON_ISOLATE_WORKER_DEPENDENCIES: 1
     }
-    applicationInsightsName: appInsightsName
+    applicationInsightsName: monitoring.outputs.applicationInsightsName
     appServicePlanId: appServicePlan.outputs.id
     runtimeName: 'python'
     runtimeVersion: '3.10'
