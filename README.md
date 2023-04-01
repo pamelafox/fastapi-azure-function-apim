@@ -52,9 +52,24 @@ which relies on the `azure.yaml` file and the configuration files in the `infra`
 Steps for deployment:
 
 1. Sign up for a [free Azure account](https://azure.microsoft.com/free/)
-2. Run `azd up`. It will prompt you to login and to provide a name (like "fastfunc") and location (like "eastus"). Then it will provision the resources in your account and deploy the latest code.
-3. Once it finishes deploying, navigate to the API endpoint URL from the output.
-7. To get a subscription key for API calls, navigate to the portal URL from the output, open the _Subscriptions_ page from the side nav, and copy one of the built-in keys.
+2. Initialize a new `azd` environment:
+
+    ```shell
+    azd init
+    ```
+
+    It will prompt you to provide a name (like "fast-func") that will later be used in the name of the deployed resources.
+
+3. Provision and deploy all the resources:
+
+    ```shell
+    azd up
+    ```
+
+    It will prompt you to login, pick a subscription, and provide a location (like "eastus"). Then it will provision the resources in your account and deploy the latest code.
+
+4. Once it finishes deploying, navigate to the API endpoint URL from the output.
+5. To get a subscription key for API calls, navigate to the portal URL from the output, open the _Subscriptions_ page from the side nav, and copy one of the built-in keys.
 
 ### CI/CD pipeline
 
