@@ -90,6 +90,10 @@ To open that dashboard, run this command once you've deployed:
 azd monitor --overview
 ```
 
+### CORS
+
+Please note that the FastAPI CORS Middleware is not supported. Instead, you should use the [APP service CORS](https://learn.microsoft.com/en-gb/azure/app-service/app-service-web-tutorial-rest-api#enable-cors). Also, make sure to [enable the 'Access-Control-Allow-Credentials'](https://learn.microsoft.com/en-gb/azure/app-service/app-service-web-tutorial-rest-api#how-do-i-enable-the-access-control-allow-credentials-header-on-the-response) header to allow your client to send cookies or authentication headers with their requests.
+
 ## Costs
 (only provided as an example, as of Nov-2022)
 
