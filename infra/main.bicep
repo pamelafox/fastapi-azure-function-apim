@@ -80,6 +80,7 @@ module functionApp 'core/host/functions.bicep' = {
     alwaysOn: false
     appSettings: {
       PYTHON_ISOLATE_WORKER_DEPENDENCIES: 1
+      AzureWebJobsFeatureFlags: 'EnableWorkerIndexing'
     }
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     appServicePlanId: appServicePlan.outputs.id
