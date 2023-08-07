@@ -3,7 +3,7 @@
     "build": {
         "dockerfile": "Dockerfile",
         "args": {
-            "IMAGE": "python:3.10"
+            "IMAGE": "python:3.10-bullseye"
         },
         "context": ".."
     },
@@ -14,7 +14,8 @@
         "ghcr.io/devcontainers/features/node:1": {
             "version": "16",
             "nodeGypDependencies": false
-        }
+        },
+        "ghcr.io/azure/azure-dev/azd:latest": {}
     },
     "customizations": {
         "vscode": {
