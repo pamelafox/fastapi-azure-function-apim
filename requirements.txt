@@ -1,2 +1,2 @@
 azure-functions==1.19.0
-fastapi==0.110.2
+fastapi==0.111.0
