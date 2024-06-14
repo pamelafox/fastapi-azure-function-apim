@@ -90,6 +90,15 @@ module functionApp 'core/host/functions.bicep' = {
   }
 }
 
+module diagnostics 'app-diagnostics.bicep' = {
+  name: 'function-diagnostics'
+  scope: resourceGroup
+  params: {
+    appName: functionApp.outputs.name
+    kind: 'functionapp'
+    diagnosticWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+  }
+}
 
 // Creates Azure API Management (APIM) service to mediate the requests between the frontend and the backend API
 module apim './core/gateway/apim.bicep' = {
