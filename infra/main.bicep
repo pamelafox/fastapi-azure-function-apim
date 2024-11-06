@@ -7,6 +7,12 @@ param name string
 
 @minLength(1)
 @description('Primary location for all resources')
+@allowed(['australiaeast', 'eastasia', 'eastus', 'eastus2', 'northeurope', 'southcentralus', 'southeastasia', 'swedencentral', 'uksouth', 'westus2', 'eastus2euap'])
+@metadata({
+  azd: {
+    type: 'location'
+  }
+})
 param location string
 
 @description('The email address of the owner of the service')
@@ -27,6 +33,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 var prefix = '${name}-${resourceToken}'
+var functionAppName = '${take(prefix, 19)}-funcapp'
 
 // Monitor application with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = {
@@ -50,6 +57,9 @@ module storageAccount 'core/storage/storage-account.bicep' = {
     name: '${validStoragePrefix}storage'
     location: location
     tags: tags
+    containers: [
+    {name: functionAppName}
+    ]
   }
 }
 
@@ -62,25 +72,26 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
     name: '${prefix}-plan'
     location: location
     tags: tags
+    kind: 'functionapp'
     sku: {
-      name: 'Y1'
-      tier: 'Dynamic'
+      name: 'FC1'
+      tier: 'FlexConsumption'
     }
   }
 }
 
 module functionApp 'core/host/functions.bicep' = {
-  name: 'function'
+  name: 'function-app'
   scope: resourceGroup
   params: {
-    // Truncating to 32 due to https://github.com/Azure/azure-functions-host/issues/2015
-    name: '${take(prefix, 19)}-function-app'
+    name: functionAppName
     location: location
     tags: union(tags, { 'azd-service-name': 'api' })
     alwaysOn: false
     appSettings: {
-      PYTHON_ISOLATE_WORKER_DEPENDENCIES: 1
-      AzureWebJobsFeatureFlags: 'EnableWorkerIndexing'
+      FUNCTIONS_EXTENSION_VERSION: '~4'
+      AzureWebJobsStorage__accountName: storageAccount.outputs.name
+      AzureWebJobsStorage__blobServiceUri: storageAccount.outputs.primaryEndpoints.blob
     }
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     appServicePlanId: appServicePlan.outputs.id
@@ -105,7 +116,7 @@ module apim './core/gateway/apim.bicep' = {
   name: 'apim-deployment'
   scope: resourceGroup
   params: {
-    name: '${prefix}-function-app-apim'
+    name: '${take(prefix, 18)}-function-app-apim'
     location: location
     tags: tags
     applicationInsightsName: monitoring.outputs.applicationInsightsName
@@ -126,7 +137,6 @@ module apimAPI 'apimanagement.bicep' = {
     functionApp
   ]
 }
-
 
 
 output SERVICE_API_ENDPOINTS array = ['${apimAPI.outputs.apimServiceUrl}/public/docs']
