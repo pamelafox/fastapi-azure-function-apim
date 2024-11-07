@@ -8,7 +8,7 @@ from api.fastapi_app import create_app
 
 @pytest.fixture
 def mock_functions_env(monkeypatch):
-    monkeypatch.setenv("SCM_DO_BUILD_DURING_DEPLOYMENT", "true")
+    monkeypatch.setenv("RUNNING_IN_PRODUCTION", "true")
 
 
 def test_functions_env(mock_functions_env):
