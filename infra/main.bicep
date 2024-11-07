@@ -5,6 +5,8 @@ targetScope = 'subscription'
 @description('Name which is used to generate a short unique hash for each resource')
 param name string
 
+// Constrained due to Flex plan limitations
+// https://learn.microsoft.com/azure/azure-functions/flex-consumption-how-to#view-currently-supported-regions
 @minLength(1)
 @description('Primary location for all resources')
 @allowed(['australiaeast', 'eastasia', 'eastus', 'eastus2', 'northeurope', 'southcentralus', 'southeastasia', 'swedencentral', 'uksouth', 'westus2', 'eastus2euap'])
