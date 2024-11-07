@@ -92,6 +92,7 @@ module functionApp 'core/host/functions.bicep' = {
       FUNCTIONS_EXTENSION_VERSION: '~4'
       AzureWebJobsStorage__accountName: storageAccount.outputs.name
       AzureWebJobsStorage__blobServiceUri: storageAccount.outputs.primaryEndpoints.blob
+      RUNNING_IN_PRODUCTION: 'true'
     }
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     appServicePlanId: appServicePlan.outputs.id
