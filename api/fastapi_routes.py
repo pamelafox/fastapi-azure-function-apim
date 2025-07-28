@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 
 import fastapi
 
@@ -7,8 +8,8 @@ router = fastapi.APIRouter()
 
 @router.get("/generate_name")
 async def generate_name(
-    starts_with: str = None,
-    subscription_key: str | None = fastapi.Query(default=None, alias="subscription-key"),
+    starts_with: Optional[str] = None,
+    subscription_key: Optional[str] = fastapi.Query(default=None, alias="subscription-key"),
 ):
     names = ["Minnie", "Margaret", "Myrtle", "Noa", "Nadia"]
     if starts_with:
