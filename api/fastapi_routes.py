@@ -7,7 +7,7 @@ router = fastapi.APIRouter()
 
 @router.get("/generate_name")
 async def generate_name(
-    starts_with: str = None,
+    starts_with: str | None = None,
     subscription_key: str | None = fastapi.Query(default=None, alias="subscription-key"),
 ):
     names = ["Minnie", "Margaret", "Myrtle", "Noa", "Nadia"]
