@@ -34,10 +34,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-var prefix = '${take(name, 30)}-${resourceToken}'
+// Azure Storage Account name must be between 3 and 24 characters, lowercase, and unique.
+// See: https://learn.microsoft.com/azure/storage/common/storage-account-overview#storage-account-name
+var storageAccountPrefixLength = 12 // Number of characters from prefixWithoutHyphens to use
+var storageAccountTokenLength = 5   // Number of characters from resourceToken to use
+var prefix = '${toLower(take(name, 30))}-${resourceToken}'
 var prefixWithoutHyphens = replace(prefix, '-', '')
 var functionAppName = '${prefix}-funcapp'
-var storageAccountName = '${toLower(take(prefixWithoutHyphens, 12))}${take(resourceToken, 5)}storage'
+var storageAccountName = '${take(prefixWithoutHyphens, storageAccountPrefixLength)}${take(resourceToken, storageAccountTokenLength)}storage'
 var blobContainerName = '${prefixWithoutHyphens}-container'
 var apimName = '${prefix}-apim'
 
