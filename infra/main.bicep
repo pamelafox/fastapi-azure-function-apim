@@ -34,8 +34,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-var prefix = '${name}-${resourceToken}'
-var functionAppName = '${take(prefix, 19)}-funcapp'
+var prefix = '${take(name, 30)}-${resourceToken}'
+var prefixWithoutHyphens = replace(prefix, '-', '')
+var functionAppName = '${prefix}-funcapp'
+var storageAccountName = '${toLower(take(prefixWithoutHyphens, 12))}${take(resourceToken, 5)}storage'
+var blobContainerName = '${prefixWithoutHyphens}-container'
+var apimName = '${prefix}-apim'
 
 // Monitor application with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = {
@@ -51,16 +55,15 @@ module monitoring './core/monitor/monitoring.bicep' = {
 }
 
 // Backing storage for Azure functions backend API
-var validStoragePrefix = toLower(take(replace(prefix, '-', ''), 17))
 module storageAccount 'core/storage/storage-account.bicep' = {
   name: 'storage'
   scope: resourceGroup
   params: {
-    name: '${validStoragePrefix}storage'
+    name: storageAccountName
     location: location
     tags: tags
     containers: [
-    {name: functionAppName}
+    {name: blobContainerName}
     ]
   }
 }
@@ -101,6 +104,7 @@ module functionApp 'core/host/functions.bicep' = {
     runtimeName: 'python'
     runtimeVersion: '3.10'
     storageAccountName: storageAccount.outputs.name
+    blobContainerName: blobContainerName
   }
 }
 
@@ -119,7 +123,7 @@ module apim './core/gateway/apim.bicep' = {
   name: 'apim-deployment'
   scope: resourceGroup
   params: {
-    name: '${take(prefix, 18)}-function-app-apim'
+    name: apimName
     location: location
     tags: tags
     applicationInsightsName: monitoring.outputs.applicationInsightsName
