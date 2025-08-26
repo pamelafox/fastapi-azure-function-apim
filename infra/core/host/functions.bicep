@@ -31,6 +31,7 @@ param minimumElasticInstanceCount int = -1
 param numberOfWorkers int = -1
 param healthCheckPath string = ''
 param storageAccountName string
+param blobContainerName string
 
 resource appService 'Microsoft.Web/sites@2023-12-01' = {
   name: name
@@ -54,7 +55,7 @@ resource appService 'Microsoft.Web/sites@2023-12-01' = {
       deployment: {
         storage: {
           type: 'blobContainer'
-          value: '${storage.properties.primaryEndpoints.blob}${name}'
+          value: '${storage.properties.primaryEndpoints.blob}${blobContainerName}'
           authentication: {
             type: 'SystemAssignedIdentity'
           }

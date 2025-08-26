@@ -34,8 +34,17 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-var prefix = '${name}-${resourceToken}'
-var functionAppName = '${take(prefix, 19)}-funcapp'
+// Azure Storage Account name must be between 3 and 24 characters, lowercase, and unique.
+// See: https://learn.microsoft.com/azure/storage/common/storage-account-overview#storage-account-name
+var storageAccountTokenLength = 5           // Number of characters from resourceToken to use (can be adjusted if needed)
+var storageSuffixLength = length('storage') // Length of 'storage'
+var storageAccountPrefixLength = 24 - storageAccountTokenLength - storageSuffixLength // Calculated for maintainability
+var prefix = '${toLower(take(name, 30))}-${resourceToken}'
+var prefixWithoutHyphens = replace(prefix, '-', '')
+var functionAppName = '${prefix}-funcapp'
+var storageAccountName = '${take(prefixWithoutHyphens, storageAccountPrefixLength)}${take(resourceToken, storageAccountTokenLength)}storage'
+var blobContainerName = '${prefixWithoutHyphens}-container'
+var apimName = '${prefix}-apim'
 
 // Monitor application with Azure Monitor
 module monitoring './core/monitor/monitoring.bicep' = {
@@ -51,16 +60,15 @@ module monitoring './core/monitor/monitoring.bicep' = {
 }
 
 // Backing storage for Azure functions backend API
-var validStoragePrefix = toLower(take(replace(prefix, '-', ''), 17))
 module storageAccount 'core/storage/storage-account.bicep' = {
   name: 'storage'
   scope: resourceGroup
   params: {
-    name: '${validStoragePrefix}storage'
+    name: storageAccountName
     location: location
     tags: tags
     containers: [
-    {name: functionAppName}
+    {name: blobContainerName}
     ]
   }
 }
@@ -101,6 +109,7 @@ module functionApp 'core/host/functions.bicep' = {
     runtimeName: 'python'
     runtimeVersion: '3.10'
     storageAccountName: storageAccount.outputs.name
+    blobContainerName: blobContainerName
   }
 }
 
@@ -119,7 +128,7 @@ module apim './core/gateway/apim.bicep' = {
   name: 'apim-deployment'
   scope: resourceGroup
   params: {
-    name: '${take(prefix, 18)}-function-app-apim'
+    name: apimName
     location: location
     tags: tags
     applicationInsightsName: monitoring.outputs.applicationInsightsName
